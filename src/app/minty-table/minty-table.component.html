@@ -1,0 +1,17 @@
+<form [formGroup]="form">
+    <table formArrayName="columns">
+        <tr>
+            <td>start</td>
+            <td>end</td>
+            <td>weight</td>
+        </tr>
+        <ng-container *ngFor="let column of columns.controls; let i=index" [formGroupName]="i" class="column">
+            <tr>
+                <td><input formControlName="start" placeholder="Start"></td>
+                <td><input formControlName="end" placeholder="End"></td>
+                <td><input formControlName="weight" placeholder="Weight"></td>
+            </tr>
+        </ng-container>
+    </table>
+</form>
+
