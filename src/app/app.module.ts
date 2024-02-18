@@ -6,6 +6,8 @@ import {MintyTableComponent} from './minty-table/minty-table.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {GraphModule} from "@swimlane/ngx-graph";
 import {HttpClientModule} from "@angular/common/http";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {NgLetModule} from "ng-let";
 
 @NgModule({
     declarations: [
@@ -13,10 +15,12 @@ import {HttpClientModule} from "@angular/common/http";
         MintyTableComponent
     ],
     imports: [
+        BrowserAnimationsModule,
         BrowserModule,
         ReactiveFormsModule,
         GraphModule,
-        HttpClientModule
+        HttpClientModule,
+        NgLetModule
     ],
     providers: [],
     bootstrap: [AppComponent]

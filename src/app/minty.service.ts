@@ -6,7 +6,7 @@ import {NodeData} from "./node-data";
     providedIn: 'root'
 })
 export class MintyService {
-    private transitions!: NodeTransition[];
+    private transitions: NodeTransition[] = [];
 
     init(transitions: NodeTransition[]) {
         this.transitions = transitions;

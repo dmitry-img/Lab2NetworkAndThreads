@@ -1,13 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, DestroyRef, OnInit, ViewChild} from '@angular/core';
 import {NodeTransition} from "./minty-table/node-transition";
 import {Edge} from "@swimlane/ngx-graph/lib/models/edge.model";
-import {Node} from "@swimlane/ngx-graph";
-import {Observable, of} from "rxjs";
-import * as shape from 'd3-shape';
+import {GraphComponent, Node} from "@swimlane/ngx-graph";
+import {Observable, Subscription} from "rxjs";
 import {MintyService} from "./minty.service";
-import {HttpClient} from "@angular/common/http";
-import {SeedService} from "./seed.service";
-
+import {DataService} from "./data.service";
+import {MintyTableComponent} from "./minty-table/minty-table.component";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-root',
@@ -20,37 +19,56 @@ export class AppComponent implements OnInit {
     nodes!: Node[];
     links!: Edge[];
 
-    data: NodeTransition[] = []
+    data$: Observable<NodeTransition[]>;
+    dataSubscription: Subscription;
 
-    seedData$: Observable<NodeTransition[]> = of([]);
-    constructor(private mintyService: MintyService, private seedService: SeedService) {
+    @ViewChild(MintyTableComponent) table: MintyTableComponent;
+    @ViewChild(GraphComponent) graph: GraphComponent;
+    constructor(
+        private mintyService: MintyService,
+        private dataService: DataService,
+        private destroyRef: DestroyRef
+    ) {
+        this.data$ = dataService.data$.asObservable();
     }
+
 
     ngOnInit(): void {
-        this.mintyService.init(this.data);
-        this.mintyService.getShortestPath(4)
+       this.dataSubscription = this.data$
+           .pipe(
+               takeUntilDestroyed(this.destroyRef)
+           )
+           .subscribe((data: NodeTransition[]) => {
+                this.mintyService.init(data);
 
+                this.nodes = this.mintyService.getNodesIndexes()
+                    .map(nodeIndex => nodeIndex.toString())
+                    .map(nodeIndex => ({ id: nodeIndex, label: nodeIndex  } as Node))
 
-        const nodesIndexes : Set<string> = new Set<string>();
-        this.nodes = this.mintyService.getNodesIndexes()
-            .map(nodeIndex => nodeIndex.toString())
-            .map(nodeIndex => ({ id: nodeIndex, label: nodeIndex  } as Node))
-
-        this.links = this.data.map((column, index) =>
-            ({
-                id: index.toString(),
-                source: column.start.toString(),
-                target: column.end.toString(),
-                label: column.weight.toString()
-            } as Edge)
-        )
+                this.links = data.map((column, index) =>
+                    ({
+                        id: index.toString(),
+                        source: column.start.toString(),
+                        target: column.end.toString(),
+                        label: column.weight.toString()
+                    } as Edge)
+            )
+        })
     }
 
-    onSeed(){
-        this.seedData$ = this.seedService.getData();
+    onSeed(): void {
+        this.dataService.seedData();
     }
 
-    onClear(){
+    onClear(): void {
+        this.dataService.resetData();
+    }
 
+    onRemoveElement(id : string) {
+        this.dataService.removeElement(id)
+    }
+
+    onAddElement(nodeTransition: NodeTransition) {
+        this.dataService.addElement(nodeTransition);
     }
 }
