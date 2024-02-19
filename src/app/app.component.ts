@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     nodes!: Node[];
     links!: Edge[];
 
-    mintyResult?: number;
+    mintyResult?: number | string = null;
 
     data$: Observable<NodeTransition[]>;
 
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.data$
             .pipe(
-               takeUntilDestroyed(this.destroyRef)
+               takeUntilDestroyed(this.destroyRef),
             )
             .subscribe((data: NodeTransition[]) => {
                 this.mintyService.init(data);
@@ -48,12 +48,13 @@ export class AppComponent implements OnInit {
 
                 this.links = data.map((column, index) =>
                     ({
-                        id: index.toString(),
+                        id: 'l' + index,
                         source: column.start.toString(),
                         target: column.end.toString(),
                         label: column.weight.toString()
                     } as Edge)
                 )
+                this.clearMintyResult();
         })
     }
 
@@ -63,7 +64,11 @@ export class AppComponent implements OnInit {
 
     onClear(): void {
         this.dataService.resetData();
-        this.mintyResult = undefined;
+        this.clearMintyResult();
+    }
+
+    clearMintyResult(){
+        this.mintyResult = null;
     }
 
     onRemoveElement(id : string) {
@@ -75,6 +80,6 @@ export class AppComponent implements OnInit {
     }
 
     onNodeClick(node: Node) {
-        this.mintyResult = this.mintyService.getShortestPath(+node.id);
+        this.mintyResult = this.mintyService.getShortestPath(+node.id) ?? "The path was not detected"
     }
 }

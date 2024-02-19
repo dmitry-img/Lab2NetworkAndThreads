@@ -12,7 +12,7 @@ export class MintyService {
         this.transitions = transitions;
     }
 
-    getShortestPath(destinationNodeIndex: number): number {
+    getShortestPath(destinationNodeIndex: number): number | null {
         const initialNode: NodeData = {index: Math.min(...this.getNodesIndexes()), h: 0}
         const I: Set<number> = new Set<number>([initialNode.index]);
 
@@ -22,7 +22,7 @@ export class MintyService {
         let stepHs = this.getHs([initialNode], initialNodeTransitions);
         const nodesData: NodeData[] = [initialNode]
 
-        while (!I.has(destinationNodeIndex)){
+        while (!I.has(destinationNodeIndex) && J.size !== 0){
             const minH = Math.min(...stepHs.map(node => node.h));
             const nodesWithMinH = stepHs.filter(node => node.h === minH)
             nodesData.push(...nodesWithMinH);
@@ -42,7 +42,7 @@ export class MintyService {
             stepHs = this.getHs(nodesData, availableTransitions)
         }
 
-        return nodesData.find(node => node.index === destinationNodeIndex)!.h;
+        return nodesData.find(node => node.index === destinationNodeIndex)?.h;
     }
 
     private getHs(nodesData: NodeData[], transitions: NodeTransition[]): NodeData[]{
