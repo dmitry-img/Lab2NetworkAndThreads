@@ -6,6 +6,8 @@ import {MintyTableComponent} from "./minty-table/minty-table.component";
 import {MintyService} from "../../minty.service";
 import {DataService} from "../../data.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {MintyResult} from "./minty-table/minty-result";
+import {id} from "@swimlane/ngx-graph/lib/utils/id";
 
 @Component({
   selector: 'app-minty',
@@ -13,12 +15,10 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
   styleUrls: ['./minty.component.css']
 })
 export class MintyComponent implements OnInit, OnDestroy {
-    protected readonly Math = Math;
-
     nodes!: Node[];
     links!: Edge[];
 
-    mintyResult?: number | string = null;
+    mintyResult?: MintyResult = null;
 
     data$: Observable<NodeTransition[]>;
 
@@ -78,7 +78,7 @@ export class MintyComponent implements OnInit, OnDestroy {
     }
 
     onNodeClick(node: Node) {
-        this.mintyResult = this.mintyService.getShortestPath(+node.id) ?? "The path was not detected"
+        this.mintyResult = this.mintyService.getShortestPath(+node.id)
     }
 
     ngOnDestroy(): void {

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {NodeTransition} from "./features/minty/minty-table/node-transition";
 import {NodeData} from "./node-data";
+import {MintyResult} from "./minty-table/minty-result";
 
 @Injectable({
     providedIn: 'root'
@@ -12,7 +13,7 @@ export class MintyService {
         this.transitions = transitions;
     }
 
-    getShortestPath(destinationNodeIndex: number): number | null {
+    getShortestPath(destinationNodeIndex: number): MintyResult | null {
         const initialNode: NodeData = {index: Math.min(...this.getNodesIndexes()), h: 0}
         const I: Set<number> = new Set<number>([initialNode.index]);
 
@@ -42,7 +43,19 @@ export class MintyService {
             stepHs = this.getHs(nodesData, availableTransitions)
         }
 
-        return nodesData.find(node => node.index === destinationNodeIndex)?.h;
+        const finalNode = nodesData.find(node => node.index === destinationNodeIndex);
+        const path :number[] = [];
+        if(finalNode !== null) {
+            let node: NodeData | null = {... finalNode};
+            while(node){
+                path.push(node.index)
+                const transition = this.transitions.find(t => t.id == node.createdFromTransitionId);
+                node = nodesData.find(n => n.index == transition?.start);
+            }
+
+            return {h: finalNode.h, path: path.reverse()};
+        }
+        return {errorMessage: "The path was not detected"};
     }
 
     private getHs(nodesData: NodeData[], transitions: NodeTransition[]): NodeData[]{
@@ -50,7 +63,7 @@ export class MintyService {
         transitions.map(transition => {
             nodesData.filter(node => node.index == transition.start)
                 .forEach(node => {
-                    result.push({ index: transition.end, h: node.h + transition.weight } as NodeData)
+                    result.push({ index: transition.end, h: node.h + transition.weight, createdFromTransitionId: transition.id } as NodeData)
                 })
         });
 
