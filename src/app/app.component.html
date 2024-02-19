@@ -53,7 +53,16 @@
                     </svg:g>
                 </ng-template>
             </ngx-graph>
-            <p *ngIf="mintyResult !== null" style="font-size: 20px">Minty Result: {{ mintyResult }}</p>
+            <ng-container *ngIf="mintyResult !== null; ">
+                <ng-container *ngIf="mintyResult.errorMessage; else result">
+                    <p>{{mintyResult.errorMessage}}</p>
+                </ng-container>
+                <ng-template #result>
+                    <p>{{mintyResult.h}}</p>
+                    <p>{{mintyResult.path}}</p>
+                </ng-template>
+            </ng-container>
+
         </div>
     </div>
 </ng-container>

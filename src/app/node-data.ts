@@ -1,4 +1,5 @@
 export interface NodeData {
     index: number;
-    h: number
+    h: number;
+    createdFromTransitionId?: string;
 }

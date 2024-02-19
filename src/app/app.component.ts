@@ -7,6 +7,7 @@ import {MintyService} from "./minty.service";
 import {DataService} from "./data.service";
 import {MintyTableComponent} from "./minty-table/minty-table.component";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {MintyResult} from "./minty-table/minty-result";
 
 @Component({
     selector: 'app-root',
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
     nodes!: Node[];
     links!: Edge[];
 
-    mintyResult?: number | string = null;
+    mintyResult?: MintyResult = null;
 
     data$: Observable<NodeTransition[]>;
 
@@ -80,6 +81,6 @@ export class AppComponent implements OnInit {
     }
 
     onNodeClick(node: Node) {
-        this.mintyResult = this.mintyService.getShortestPath(+node.id) ?? "The path was not detected"
+        this.mintyResult = this.mintyService.getShortestPath(+node.id)
     }
 }
