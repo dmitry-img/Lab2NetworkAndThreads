@@ -2,7 +2,7 @@ import {Component, DestroyRef, OnInit, ViewChild} from '@angular/core';
 import {NodeTransition} from "./minty-table/node-transition";
 import {Edge} from "@swimlane/ngx-graph/lib/models/edge.model";
 import {GraphComponent, Node} from "@swimlane/ngx-graph";
-import {Observable, Subscription} from "rxjs";
+import {Observable} from "rxjs";
 import {MintyService} from "./minty.service";
 import {DataService} from "./data.service";
 import {MintyTableComponent} from "./minty-table/minty-table.component";
@@ -22,7 +22,6 @@ export class AppComponent implements OnInit {
     mintyResult?: number;
 
     data$: Observable<NodeTransition[]>;
-    dataSubscription: Subscription;
 
     @ViewChild(MintyTableComponent) table: MintyTableComponent;
     @ViewChild(GraphComponent) graph: GraphComponent;
@@ -36,11 +35,11 @@ export class AppComponent implements OnInit {
 
 
     ngOnInit(): void {
-       this.dataSubscription = this.data$
-           .pipe(
+        this.data$
+            .pipe(
                takeUntilDestroyed(this.destroyRef)
-           )
-           .subscribe((data: NodeTransition[]) => {
+            )
+            .subscribe((data: NodeTransition[]) => {
                 this.mintyService.init(data);
 
                 this.nodes = this.mintyService.getNodesIndexes()
@@ -54,7 +53,7 @@ export class AppComponent implements OnInit {
                         target: column.end.toString(),
                         label: column.weight.toString()
                     } as Edge)
-            )
+                )
         })
     }
 
