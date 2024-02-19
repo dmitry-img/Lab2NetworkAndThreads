@@ -13,7 +13,7 @@ export class MintyService {
         this.transitions = transitions;
     }
 
-    getShortestPath(destinationNodeIndex: number): MintyResult | null {
+    getShortestPath(destinationNodeIndex: number): MintyResult {
         const initialNode: NodeData = {index: Math.min(...this.getNodesIndexes()), h: 0}
         const I: Set<number> = new Set<number>([initialNode.index]);
 
