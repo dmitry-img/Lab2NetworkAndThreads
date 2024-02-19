@@ -1,6 +1,6 @@
 import {DestroyRef, Injectable} from '@angular/core';
 import { BehaviorSubject } from "rxjs";
-import { NodeTransition } from "./minty-table/node-transition";
+import { NodeTransition } from "./features/minty/minty-table/node-transition";
 import { HttpClient } from "@angular/common/http";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { v4 as uuidv4 } from 'uuid';

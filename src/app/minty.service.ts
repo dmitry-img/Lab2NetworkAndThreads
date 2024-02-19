@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {NodeTransition} from "./minty-table/node-transition";
+import {NodeTransition} from "./features/minty/minty-table/node-transition";
 import {NodeData} from "./node-data";
 
 @Injectable({

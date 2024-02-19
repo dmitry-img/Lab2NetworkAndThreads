@@ -1,0 +1,21 @@
+<form [formGroup]="form">
+    <table formArrayName="columns">
+        <tr>
+            <th>Start</th>
+            <th>End</th>
+            <th>Weight</th>
+        </tr>
+        <ng-container *ngFor="let column of columns.controls; let i = index; let last = last" [formGroupName]="i" class="column">
+            <tr>
+                <td><input class="form-control" type="number" formControlName="start" placeholder="Start"></td>
+                <td><input class="form-control" type="number" formControlName="end" placeholder="End"></td>
+                <td><input class="form-control" type="number" formControlName="weight" placeholder="Weight"></td>
+                <td><button class="btn btn-primary" *ngIf="last; else removeOption" (click)="onAddButtonClick()">Add</button></td>
+                <ng-template #removeOption>
+                    <button class="btn btn-danger"  (click)="onRemoveButtonCLick(i)">Remove</button>
+                </ng-template>
+            </tr>
+        </ng-container>
+    </table>
+</form>
+
