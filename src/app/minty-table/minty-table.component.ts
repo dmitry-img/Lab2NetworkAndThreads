@@ -69,7 +69,7 @@ export class MintyTableComponent implements OnInit{
 
     onRemoveButtonCLick(index: number) {
         const column = this.columns.at(index);
-        const value = column.value as NodeTransition;
+        const value = column.getRawValue() as NodeTransition;
         this.removeElement.emit(value.id);
     }
 }

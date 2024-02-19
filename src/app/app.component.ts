@@ -19,6 +19,8 @@ export class AppComponent implements OnInit {
     nodes!: Node[];
     links!: Edge[];
 
+    mintyResult?: number;
+
     data$: Observable<NodeTransition[]>;
     dataSubscription: Subscription;
 
@@ -62,6 +64,7 @@ export class AppComponent implements OnInit {
 
     onClear(): void {
         this.dataService.resetData();
+        this.mintyResult = undefined;
     }
 
     onRemoveElement(id : string) {
@@ -70,5 +73,9 @@ export class AppComponent implements OnInit {
 
     onAddElement(nodeTransition: NodeTransition) {
         this.dataService.addElement(nodeTransition);
+    }
+
+    onNodeClick(node: Node) {
+        this.mintyResult = this.mintyService.getShortestPath(+node.id);
     }
 }
