@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {NodeTransition} from "./features/minty/minty-table/node-transition";
 import {NodeData} from "./node-data";
-import {MintyResult} from "./minty-table/minty-result";
+import {MintyResult} from "./features/minty/minty-table/minty-result";
 
 @Injectable({
     providedIn: 'root'

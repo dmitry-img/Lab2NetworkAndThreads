@@ -15,6 +15,8 @@ import {id} from "@swimlane/ngx-graph/lib/utils/id";
   styleUrls: ['./minty.component.css']
 })
 export class MintyComponent implements OnInit, OnDestroy {
+    protected readonly Math = Math;
+
     nodes!: Node[];
     links!: Edge[];
 
