@@ -1,14 +1,12 @@
 <form [formGroup]="form">
     <table formArrayName="columns">
         <tr>
-            <th>id</th>
             <th>start</th>
             <th>end</th>
             <th>weight</th>
         </tr>
         <ng-container *ngFor="let column of columns.controls; let i = index; let last = last" [formGroupName]="i" class="column">
             <tr>
-                <td><input style="width: 300px;" formControlName="id" placeholder="Id" [disabled]="true"></td>
                 <td><input style="width: 40px;" type="number" formControlName="start" placeholder="Start"></td>
                 <td><input style="width: 40px;" type="number" formControlName="end" placeholder="End"></td>
                 <td><input style="width: 40px;" type="number" formControlName="weight" placeholder="Weight"></td>
