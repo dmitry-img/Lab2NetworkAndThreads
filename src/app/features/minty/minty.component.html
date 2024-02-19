@@ -1,0 +1,68 @@
+<div class="container">
+    <ng-container *ngLet = "data$ | async as data">
+        <div class="row" style="height: 40vw" xmlns:svg="">
+            <div class="col-4">
+                <app-minty-table
+                    [data]="data"
+                    (removeElement) = "onRemoveElement($event)"
+                    (addElement)="onAddElement($event)"
+                ></app-minty-table>
+                <button class="btn btn-warning" (click)="onSeed()">Seed</button>
+                <button class="btn btn-secondary m-1" (click)="onClear()">Clear</button>
+            </div>
+            <div class="col-8">
+                <ngx-graph
+                    #graph
+                    *ngIf="data?.length"
+                    [links]="links"
+                    [nodes]="nodes"
+                    [autoCenter]="true"
+                    [showMiniMap]="true"
+                    [layout]="'dagre'"
+                >
+
+                    <ng-template #nodeTemplate let-node>
+                        <svg:g class="node" (click)="onNodeClick(node)">
+                            <svg:circle
+                                [attr.cx]="node.dimension.width / 2"
+                                [attr.cy]="node.dimension.height / 2"
+                                [attr.r]="Math.min(node.dimension.width, node.dimension.height) / 2"
+                                [attr.fill]="node.data.color" />
+                            <svg:text
+                                text-anchor="middle"
+                                [attr.x]="node.dimension.width / 2"
+                                [attr.y]="node.dimension.height / 2"
+                                dy="0.35em">{{node.label}}</svg:text>
+                        </svg:g>
+                    </ng-template>
+
+                    <ng-template #defsTemplate>
+                        <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+                            <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+                        </svg:marker>
+                    </ng-template>
+
+                    <ng-template #linkTemplate let-link>
+                        <svg:g class="edge">
+                            <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+                            </svg:path>
+                            <svg:text class="edge-label" text-anchor="middle">
+                                <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+                                    {{link.label}}
+                                </textPath>
+                            </svg:text>
+                        </svg:g>
+                    </ng-template>
+                </ngx-graph>
+                <ng-container *ngIf="mintyResult !== null; ">
+                    <ng-container *ngIf="mintyResult.errorMessage; else result">
+                        <p>{{mintyResult.errorMessage}}</p>
+                    </ng-container>
+                    <ng-template #result>
+                        <p>{{mintyResult.h}}</p>
+                        <p>{{mintyResult.path}}</p>
+                    </ng-template>
+                </ng-container>            </div>
+        </div>
+    </ng-container>
+</div>
