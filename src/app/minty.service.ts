@@ -45,7 +45,7 @@ export class MintyService {
 
         const finalNode = nodesData.find(node => node.index === destinationNodeIndex);
         const path :number[] = [];
-        if(finalNode !== null) {
+        if(finalNode) {
             let node: NodeData | null = {... finalNode};
             while(node){
                 path.push(node.index)

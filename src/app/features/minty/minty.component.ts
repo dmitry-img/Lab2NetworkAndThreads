@@ -7,7 +7,6 @@ import {MintyService} from "../../minty.service";
 import {DataService} from "../../data.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {MintyResult} from "./minty-table/minty-result";
-import {id} from "@swimlane/ngx-graph/lib/utils/id";
 
 @Component({
   selector: 'app-minty',
