@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {NodeTransition} from "./features/minty/minty-table/node-transition";
 import {NodeData} from "./node-data";
-import {MintyResult} from "./features/minty/minty-table/minty-result";
+import {Result} from "./features/minty/minty-table/result";
+
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class MintyService {
         this.transitions = transitions;
     }
 
-    getShortestPath(destinationNodeIndex: number): MintyResult {
+    getShortestPath(destinationNodeIndex: number): Result {
         const initialNode: NodeData = {index: Math.min(...this.getNodesIndexes()), h: 0}
         const I: Set<number> = new Set<number>([initialNode.index]);
 
@@ -44,18 +45,26 @@ export class MintyService {
         }
 
         const finalNode = nodesData.find(node => node.index === destinationNodeIndex);
-        const path :number[] = [];
+        const path :NodeTransition[] = [];
         if(finalNode) {
             let node: NodeData | null = {... finalNode};
             while(node){
-                path.push(node.index)
                 const transition = this.transitions.find(t => t.id == node.createdFromTransitionId);
+                if(node.createdFromTransitionId) {
+                    path.push(transition)
+                }
                 node = nodesData.find(n => n.index == transition?.start);
             }
 
-            return {h: finalNode.h, path: path.reverse()};
+            return {
+                    mintyResult: {
+                            h: finalNode.h,
+                            path: path.reverse()
+                    },
+                    isSuccessful: true
+            }
         }
-        return {errorMessage: "The path was not detected"};
+        return {isSuccessful: false, errorMessage: "The path was not detected"};
     }
 
     private getHs(nodesData: NodeData[], transitions: NodeTransition[]): NodeData[]{

@@ -1,12 +1,15 @@
 import {Component, DestroyRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Edge, GraphComponent, Node} from "@swimlane/ngx-graph";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {NodeTransition} from "./minty-table/node-transition";
 import {MintyTableComponent} from "./minty-table/minty-table.component";
 import {MintyService} from "../../minty.service";
 import {DataService} from "../../data.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {MintyResult} from "./minty-table/minty-result";
+
+import {TransitionStyle} from "./transition-style";
+import {Result} from "./minty-table/result";
+import {LinkData} from "./link-data";
 
 @Component({
   selector: 'app-minty',
@@ -19,9 +22,13 @@ export class MintyComponent implements OnInit, OnDestroy {
     nodes!: Node[];
     links!: Edge[];
 
-    mintyResult?: MintyResult = null;
+    defaultTransitionStyle: TransitionStyle = {width: 2, color: 'black'};
+    optimalTransitionStyle: TransitionStyle = {width: 5, color: '#6F0'};
+
+    result?: Result = null;
 
     data$: Observable<NodeTransition[]>;
+    updateGraph$: Subject<boolean> = new Subject();
 
     @ViewChild(MintyTableComponent) table: MintyTableComponent;
     @ViewChild(GraphComponent) graph: GraphComponent;
@@ -51,7 +58,8 @@ export class MintyComponent implements OnInit, OnDestroy {
                         id: 'l' + index,
                         source: column.start.toString(),
                         target: column.end.toString(),
-                        label: column.weight.toString()
+                        label: column.weight.toString(),
+                        data: {nodeTransitionId: column.id, transitionStyle: this.defaultTransitionStyle} as LinkData
                     } as Edge)
                 )
                 this.clearMintyResult();
@@ -67,7 +75,7 @@ export class MintyComponent implements OnInit, OnDestroy {
     }
 
     clearMintyResult(){
-        this.mintyResult = null;
+        this.result = null;
     }
 
     onRemoveElement(id : string) {
@@ -79,7 +87,17 @@ export class MintyComponent implements OnInit, OnDestroy {
     }
 
     onNodeClick(node: Node) {
-        this.mintyResult = this.mintyService.getShortestPath(+node.id)
+        this.result = this.mintyService.getShortestPath(+node.id)
+        this.links.forEach(l => (l.data as LinkData).transitionStyle = this.defaultTransitionStyle);
+
+        if(this.result?.isSuccessful && this.result.mintyResult.path.length) {
+            this.result.mintyResult.path.forEach(tr => {
+                const link = this.links.find(l => (l.data as LinkData).nodeTransitionId == tr.id);
+                (link.data as LinkData).transitionStyle = this.optimalTransitionStyle;
+            });
+
+            this.updateGraph$.next(true)
+        }
     }
 
     ngOnDestroy(): void {
