@@ -1,4 +1,4 @@
-import {Component, DestroyRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, DestroyRef, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Edge, GraphComponent, Node} from "@swimlane/ngx-graph";
 import {Observable, Subject} from "rxjs";
 import {NodeTransition} from "./minty-table/node-transition";
@@ -18,9 +18,10 @@ import {LinkData} from "./link-data";
 })
 export class MintyComponent implements OnInit, OnDestroy {
     protected readonly Math = Math;
-
+    private localStorageTemplate = 'storageItem_'
     nodes!: Node[];
     links!: Edge[];
+    savedDatasets: Set<string> = new Set<string>();
 
     defaultTransitionStyle: TransitionStyle = {width: 2, color: 'black'};
     optimalTransitionStyle: TransitionStyle = {width: 5, color: '#6F0'};
@@ -32,6 +33,7 @@ export class MintyComponent implements OnInit, OnDestroy {
 
     @ViewChild(MintyTableComponent) table: MintyTableComponent;
     @ViewChild(GraphComponent) graph: GraphComponent;
+    @ViewChild('setsSelect') setsSelect: ElementRef;
     constructor(
         private mintyService: MintyService,
         private dataService: DataService,
@@ -42,6 +44,12 @@ export class MintyComponent implements OnInit, OnDestroy {
 
 
     ngOnInit(): void {
+        for (var key in localStorage){
+            if(key.startsWith(this.localStorageTemplate, 0)){
+                this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
+            }
+        }
+
         this.data$
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
@@ -107,5 +115,26 @@ export class MintyComponent implements OnInit, OnDestroy {
     private clear(){
         this.dataService.resetData();
         this.clearMintyResult();
+        this.setsSelect.nativeElement.options.selectedIndex = 0;
+    }
+
+    saveToLocalStorage(value: string){
+        if(!value) {
+            alert("Invalid group name")
+            return;
+        }
+        this.savedDatasets.add(value)
+        localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(this.dataService.getData()))
+    }
+
+    onSetSelect(value: any) {
+        const selectedOption = value.target.value;
+
+        const key = this.localStorageTemplate + selectedOption;
+        const stringData = localStorage.getItem(key);
+
+        const data = JSON.parse(stringData) as NodeTransition[];
+
+        this.dataService.setData(data)
     }
 }
