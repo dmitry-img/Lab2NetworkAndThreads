@@ -9,15 +9,15 @@
                 ></app-minty-table>
                 <button class="btn btn-warning" (click)="onSeed()">Seed</button>
                 <button class="btn btn-secondary m-1 me-2" (click)="onClear()">Clear</button>
-                <span>Saved Datasets:</span>
+                <span>Saved datasets:</span>
                 <select class="form-select-sm ms-1" #setsSelect (change)="onSetSelect($event)">
-                    <option disabled selected value></option>
+                    <option disabled selected value>Choose the desired dataset</option>
                     <option *ngFor="let item of savedDatasets;">
                         {{item}}
                     </option>
                 </select>
-                <input class="ms-1 form-control w-50" [type]= "'text'" #groupName [placeholder]="'Input name of data group'"/>
-                <button class="btn btn-light m-1" (click)="saveToLocalStorage(groupName.value)">Save Data</button>
+                <input class="ms-1 form-control w-50" [type]= "'text'" #groupName [placeholder]="'Input name of dataset'"/>
+                <button class="btn btn-light m-1" (click)="saveToLocalStorage(groupName.value)">Save dataset</button>
             </div>
             <div class="col-6">
                 <ngx-graph
