@@ -14,6 +14,10 @@ export class DataService {
     constructor(private http: HttpClient, private destroyRef: DestroyRef) {
     }
 
+    getData(){
+        return this.data$.value;
+    }
+
     seedData(): void {
         this.http
             .get<NodeTransition[]>('/assets/seed-data.json')
@@ -46,5 +50,9 @@ export class DataService {
             nodeTransition.id = uuidv4()
             this.data$.next([...list, nodeTransition])
         }
+    }
+
+    setData(transitions: NodeTransition[]){
+        this.data$.next(transitions)
     }
 }
