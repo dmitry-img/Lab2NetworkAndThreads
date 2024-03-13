@@ -15,9 +15,10 @@ import { HeaderComponent } from './core/header/header.component';
 import { MintyComponent } from './features/minty/minty.component';
 import { HomeComponent } from './features/home/home.component';
 import { DocumentationComponent } from './features/documentation/documentation.component';
-import {RouterModule, RouterOutlet} from "@angular/router";
+import { RouterOutlet} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {AppRoutingModule} from "./app-routing.module";
+import {MarkdownModule} from "ngx-markdown";
 
 @NgModule({
     declarations: [
@@ -39,7 +40,8 @@ import {AppRoutingModule} from "./app-routing.module";
         A11yModule,
         RouterOutlet,
         CommonModule,
-        AppRoutingModule
+        AppRoutingModule,
+        MarkdownModule.forRoot(),
     ],
     providers: [],
     bootstrap: [AppComponent],
