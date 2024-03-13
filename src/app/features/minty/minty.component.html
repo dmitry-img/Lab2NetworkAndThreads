@@ -10,14 +10,14 @@
                 <button class="btn btn-warning" (click)="onSeed()">Seed</button>
                 <button class="btn btn-secondary m-1 me-2" (click)="onClear()">Clear</button>
                 <span>Saved datasets:</span>
-                <select class="form-select-sm ms-1" #setsSelect (change)="onSetSelect($event)">
+                <select class="form-select-sm ms-1" #setsSelect >
                     <option disabled selected value>Choose the desired dataset</option>
                     <option *ngFor="let item of savedDatasets;">
                         {{item}}
                     </option>
                 </select>
                 <input class="ms-1 form-control w-50" [type]= "'text'" #groupName [placeholder]="'Input name of dataset'"/>
-                <button class="btn btn-light m-1" (click)="saveToLocalStorage(groupName.value)">Save dataset</button>
+                <button class="btn btn-light m-1">Save dataset</button>
             </div>
             <div class="col-6">
                 <ngx-graph

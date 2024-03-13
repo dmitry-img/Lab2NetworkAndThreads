@@ -39,16 +39,18 @@ export class MintyComponent implements OnInit, OnDestroy {
         private dataService: DataService,
         private destroyRef: DestroyRef
     ) {
-        this.data$ = dataService.data$.asObservable();
+
     }
 
 
     ngOnInit(): void {
-        for (var key in localStorage){
-            if(key.startsWith(this.localStorageTemplate, 0)){
-                this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
-            }
-        }
+        this.data$ = this.dataService.data$.asObservable();
+
+        // for (const key in localStorage){
+        //     if(key.startsWith(this.localStorageTemplate, 0)){
+        //         this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
+        //     }
+        // }
 
         this.data$
             .pipe(
@@ -118,23 +120,23 @@ export class MintyComponent implements OnInit, OnDestroy {
         this.setsSelect.nativeElement.options.selectedIndex = 0;
     }
 
-    saveToLocalStorage(value: string){
-        if(!value) {
-            alert("Invalid group name")
-            return;
-        }
-        this.savedDatasets.add(value)
-        localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(this.dataService.getData()))
-    }
-
-    onSetSelect(value: any) {
-        const selectedOption = value.target.value;
-
-        const key = this.localStorageTemplate + selectedOption;
-        const stringData = localStorage.getItem(key);
-
-        const data = JSON.parse(stringData) as NodeTransition[];
-
-        this.dataService.setData(data)
-    }
+    // saveToLocalStorage(value: string){
+    //     if(!value) {
+    //         alert("Invalid group name")
+    //         return;
+    //     }
+    //     this.savedDatasets.add(value)
+    //     localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(this.dataService.getData()))
+    // }
+    //
+    // onSetSelect(value: any) {
+    //     const selectedOption = value.target.value;
+    //
+    //     const key = this.localStorageTemplate + selectedOption;
+    //     const stringData = localStorage.getItem(key);
+    //
+    //     const data = JSON.parse(stringData) as NodeTransition[];
+    //
+    //     this.dataService.setData(data)
+    // }
 }
