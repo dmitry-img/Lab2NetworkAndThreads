@@ -18,7 +18,7 @@ import { DocumentationComponent } from './features/documentation/documentation.c
 import { RouterOutlet} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {AppRoutingModule} from "./app-routing.module";
-import {MarkdownModule} from "ngx-markdown";
+//import {MarkdownModule} from "ngx-markdown";
 
 @NgModule({
     declarations: [
@@ -41,7 +41,7 @@ import {MarkdownModule} from "ngx-markdown";
         RouterOutlet,
         CommonModule,
         AppRoutingModule,
-        MarkdownModule.forRoot(),
+        //MarkdownModule.forRoot(),
     ],
     providers: [],
     bootstrap: [AppComponent],
