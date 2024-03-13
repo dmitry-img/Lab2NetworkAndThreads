@@ -65,7 +65,7 @@ export class MintyComponent implements OnInit, OnDestroy {
 
                 this.links = data.map((column, index) =>
                     ({
-                        id: 'l' + index,
+                        id: 'i' + index,
                         source: column.start.toString(),
                         target: column.end.toString(),
                         label: column.weight.toString(),
