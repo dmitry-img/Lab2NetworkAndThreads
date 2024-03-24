@@ -80,7 +80,6 @@ export class MintyComponent implements OnInit, OnDestroy {
     }
 
     onClear(): void {
-        localStorage.clear();
         this.clear();
     }
 
@@ -130,7 +129,9 @@ export class MintyComponent implements OnInit, OnDestroy {
     }
 
     onSetSelect(value: any) {
-        const key = this.localStorageTemplate + value;
+        const selectedOption = value.target.value
+
+        const key = this.localStorageTemplate + selectedOption;
         const stringData = localStorage.getItem(key);
 
         const data = JSON.parse(stringData) as NodeTransition[];
