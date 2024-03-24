@@ -1,5 +1,5 @@
 import {DestroyRef, Injectable} from '@angular/core';
-import { BehaviorSubject } from "rxjs";
+import {BehaviorSubject, forkJoin, map, Observable} from "rxjs";
 import { NodeTransition } from "./features/minty/minty-table/node-transition";
 import { HttpClient } from "@angular/common/http";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -18,13 +18,23 @@ export class DataService {
         return this.data$.value;
     }
 
-    seedData(): void {
-        this.http
-            .get<NodeTransition[]>('/assets/seed-data.json')
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(data => {
-                  this.data$.next(data.map(n => ({...n, id: uuidv4()})))
+    getSeedData(): Observable<Array<[NodeTransition[], string]>> {
+        return forkJoin({
+            banduraBohdan: this.http.get<NodeTransition[]>('/assets/bandura-bohdan.json'),
+            paskarDmytro: this.http.get<NodeTransition[]>('/assets/paskar-dmytro.json'),
+            pataraykoMaksym: this.http.get<NodeTransition[]>('/assets/patarayko-maksym.json'),
+            kaptarDiana: this.http.get<NodeTransition[]>('/assets/kaptar-diana.json'),
+        }).pipe(
+            takeUntilDestroyed(this.destroyRef),
+            map(results => {
+                return [
+                    [results.banduraBohdan, 'Bandura Bohdan'],
+                    [results.paskarDmytro, 'Paskar Dmytro'],
+                    [results.pataraykoMaksym, 'Patarayko Maksym'],
+                    [results.kaptarDiana, 'Kaptar Diana']
+                ];
             })
+        );
     }
 
     resetData(){

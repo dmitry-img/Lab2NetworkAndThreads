@@ -14,10 +14,10 @@ import {A11yModule} from "@angular/cdk/a11y";
 import { HeaderComponent } from './core/header/header.component';
 import { MintyComponent } from './features/minty/minty.component';
 import { HomeComponent } from './features/home/home.component';
-import { DocumentationComponent } from './features/documentation/documentation.component';
 import {RouterModule, RouterOutlet} from "@angular/router";
 import {CommonModule} from "@angular/common";
 import {AppRoutingModule} from "./app-routing.module";
+import { AboutComponent } from './features/about/about.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +26,7 @@ import {AppRoutingModule} from "./app-routing.module";
         HeaderComponent,
         MintyComponent,
         HomeComponent,
-        DocumentationComponent
+        AboutComponent,
     ],
     imports: [
         BrowserAnimationsModule,
