@@ -46,11 +46,11 @@ export class MintyComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.data$ = this.dataService.data$.asObservable();
 
-        // for (const key in localStorage){
-        //     if(key.startsWith(this.localStorageTemplate, 0)){
-        //         this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
-        //     }
-        // }
+        for (var key in localStorage){
+            if(key.startsWith(this.localStorageTemplate, 0)){
+                this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
+            }
+        }
 
         this.data$
             .pipe(
@@ -121,23 +121,31 @@ export class MintyComponent implements OnInit, OnDestroy {
         this.setsSelect.nativeElement.options.selectedIndex = 0;
     }
 
-    // saveToLocalStorage(value: string){
-    //     if(!value) {
-    //         alert("Invalid group name")
-    //         return;
-    //     }
-    //     this.savedDatasets.add(value)
-    //     localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(this.dataService.getData()))
-    // }
-    //
-    // onSetSelect(value: any) {
-    //     const selectedOption = value.target.value;
-    //
-    //     const key = this.localStorageTemplate + selectedOption;
-    //     const stringData = localStorage.getItem(key);
-    //
-    //     const data = JSON.parse(stringData) as NodeTransition[];
-    //
-    //     this.dataService.setData(data)
-    // }
+    saveToLocalStorage(value: string){
+        if(!value) {
+            alert("Invalid group name")
+            return;
+        }
+        this.savedDatasets.add(value)
+        localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(this.dataService.getData()))
+    }
+
+    onSetSelect(value: any) {
+        const selectedOption = value.target.value;
+
+        const key = this.localStorageTemplate + selectedOption;
+        const stringData = localStorage.getItem(key);
+
+        const data = JSON.parse(stringData) as NodeTransition[];
+
+        this.dataService.setData(data)
+    }
+
+    onFileSelected($event: Event) {
+        console.log($event)
+        const file: File = $event.target["files"][0];
+        console.log(file)
+        file.text().then(res => console.log(res))
+
+    }
 }
