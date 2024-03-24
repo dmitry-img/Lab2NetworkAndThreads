@@ -25,7 +25,6 @@ export class DataService {
             pataraykoMaksym: this.http.get<NodeTransition[]>('/assets/patarayko-maksym.json'),
             kaptarDiana: this.http.get<NodeTransition[]>('/assets/kaptar-diana.json'),
         }).pipe(
-            takeUntilDestroyed(this.destroyRef),
             map(results => {
                 return [
                     [results.banduraBohdan, 'Bandura Bohdan'],
