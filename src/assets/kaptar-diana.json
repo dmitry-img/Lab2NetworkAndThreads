@@ -2,7 +2,7 @@
     {
         "start": 1,
         "end": 2,
-        "weight": 8
+        "weight": 6
     },
 
     {
@@ -12,69 +12,69 @@
     },
 
     {
+        "start": 1,
+        "end": 4,
+        "weight": 5
+    },
+
+    {
+        "start": 2,
+        "end": 3,
+        "weight": 3
+    },
+
+    {
         "start": 2,
         "end": 4,
-        "weight":11
+        "weight": 3
     },
 
     {
         "start": 2,
         "end": 5,
-        "weight": 14
+        "weight": 3
+    },
+
+    {
+        "start": 2,
+        "end": 6,
+        "weight": 4
+    },
+
+    {
+        "start": 2,
+        "end": 7,
+        "weight": 2
     },
 
     {
         "start": 3,
-        "end": 4,
-        "weight": 12
-    },
-
-    {
-        "start": 4,
         "end": 5,
-        "weight": 6
+        "weight": 7
     },
 
     {
         "start": 4,
         "end": 6,
-        "weight": 5
-    },
-
-    {
-        "start": 4,
-        "end": 8,
         "weight": 12
     },
 
     {
         "start": 5,
         "end": 7,
-        "weight": 8
+        "weight": 2
     },
 
     {
         "start": 6,
         "end": 7,
-        "weight": 7
+        "weight": 1
     },
 
     {
         "start": 6,
-        "end": 8,
-        "weight": 10
-    },
-
-    {
-        "start": 7,
-        "end": 8,
-        "weight": 14
-    },
-
-    {
-        "start": 7,
         "end": 3,
-        "weight": 11
+        "weight": 5
     }
 
 ]
