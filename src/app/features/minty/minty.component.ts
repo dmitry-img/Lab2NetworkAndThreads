@@ -150,7 +150,7 @@ export class MintyComponent implements OnInit, OnDestroy {
             )
             .subscribe((data: NodeTransition[]) => {
                 this.dataService.setData(data);
-                this.saveToLocalStorage(file.name.split('.')[0]);
+                this.saveToLocalStorage(this.localStorageTemplate + file.name.split('.')[0]);
             });
     }
 
@@ -163,7 +163,7 @@ export class MintyComponent implements OnInit, OnDestroy {
                 }));
 
                 this.dataService.setData(enhancedNodeTransitions);
-                this.saveToLocalStorage(datasetName.split('.')[0]);
+                this.saveToLocalStorage(this.localStorageTemplate + datasetName.split('.')[0]);
             });
 
             const selectElement = this.setsSelect.nativeElement;
