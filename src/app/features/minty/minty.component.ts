@@ -10,6 +10,8 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {TransitionStyle} from "./transition-style";
 import {Result} from "./minty-table/result";
 import {LinkData} from "./link-data";
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Component({
   selector: 'app-minty',
@@ -77,10 +79,6 @@ export class MintyComponent implements OnInit, OnDestroy {
         this.updateGraph$.next(true)
     }
 
-    onSeed(): void {
-        this.dataService.seedData();
-    }
-
     onClear(): void {
         this.clear();
     }
@@ -103,7 +101,7 @@ export class MintyComponent implements OnInit, OnDestroy {
 
         if(this.result?.isSuccessful && this.result.mintyResult.path.length) {
             this.result.mintyResult.path.forEach(tr => {
-                const link = this.links.find(l => (l.data as LinkData).nodeTransitionId == tr.id);
+                const link = this.links.find(l => (l.data as LinkData).nodeTransitionId === tr.id);
                 (link.data as LinkData).transitionStyle = this.optimalTransitionStyle;
             });
 
@@ -152,7 +150,28 @@ export class MintyComponent implements OnInit, OnDestroy {
             )
             .subscribe((data: NodeTransition[]) => {
                 this.dataService.setData(data);
-                this.saveToLocalStorage(file.name);
+                this.saveToLocalStorage(file.name.split('.')[0]);
             });
     }
+
+    onSeed() {
+        this.dataService.getSeedData().subscribe(dataSets => {
+            dataSets.forEach(([nodeTransitions, datasetName], index) => {
+                const enhancedNodeTransitions = nodeTransitions.map(nodeTransition => ({
+                    ...nodeTransition,
+                    id: uuidv4()
+                }));
+
+                this.dataService.setData(enhancedNodeTransitions);
+                this.saveToLocalStorage(datasetName.split('.')[0]);
+            });
+
+            const selectElement = this.setsSelect.nativeElement;
+            if (selectElement && selectElement.options.length > 1) {
+                selectElement.value = selectElement.options[dataSets.length].value;
+            }
+        });
+    }
+
+
 }
