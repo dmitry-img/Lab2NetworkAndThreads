@@ -137,4 +137,12 @@ export class MintyComponent implements OnInit, OnDestroy {
 
         this.dataService.setData(data)
     }
+
+    onFileSelected($event: Event) {
+        console.log($event)
+        const file: File = $event.target["files"][0];
+        console.log(file)
+        file.text().then(res => console.log(res))
+
+    }
 }

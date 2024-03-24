@@ -7,6 +7,7 @@
                     (removeElement) = "onRemoveElement($event)"
                     (addElement)="onAddElement($event)"
                 ></app-minty-table>
+                <input [type]="'file'" (change)="onFileSelected($event)"/>
                 <button class="btn btn-warning" (click)="onSeed()">Seed</button>
                 <button class="btn btn-secondary m-1 me-2" (click)="onClear()">Clear</button>
                 <span>Saved Datasets:</span>
