@@ -172,6 +172,4 @@ export class MintyComponent implements OnInit, OnDestroy {
             }
         });
     }
-
-
 }
