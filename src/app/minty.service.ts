@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {NodeTransition} from "./features/minty/minty-table/node-transition";
 import {NodeData} from "./node-data";
 import {Result} from "./features/minty/minty-table/result";
+import {filter} from "rxjs";
 
 
 @Injectable({
@@ -23,12 +24,41 @@ export class MintyService {
 
         let stepHs = this.getHs([initialNode], initialNodeTransitions);
         const nodesData: NodeData[] = [initialNode]
+        let step = 1;
+        const stringBuilder: string[] = [];
 
         while (!I.has(destinationNodeIndex) && J.size !== 0){
+            stringBuilder.push(`Step ${step}:`)
+
+            const addedNodesToMessage: number[] = [];
+            const nodesDataMessage = nodesData.map(n => {
+                if(addedNodesToMessage.some(a => a === n.index))
+                    return '';
+                addedNodesToMessage.push(n.index);
+                return "h" + n.index + " = " + n.h;
+            })
+                .filter(m => m !== '')
+                .join(', ')
+            stringBuilder.push(`${nodesDataMessage}`)
+            stringBuilder.push(`I={${[...I].join(', ')}}`);
+            stringBuilder.push(`J={${[...J].join(', ')}}`);
+
+            const stepHsMessage = stepHs.map(n => {
+                const transition = this.transitions.find(t => t.id === n.createdFromTransitionId);
+                return `h${n.index} = h${transition.start} + c${transition.start}${transition.end} = ${n.h}`
+            })
+                .join('; ')
+            stringBuilder.push(`New hs: ${stepHsMessage}`)
+
             const minH = Math.min(...stepHs.map(node => node.h));
             const nodesWithMinH = stepHs.filter(node => node.h === minH)
             nodesData.push(...nodesWithMinH);
 
+            const minTransitions = this.transitions
+                .filter(t => nodesWithMinH.some(s => s.createdFromTransitionId === t.id))
+                .map(tr => `(${tr.start}, ${tr.end})`)
+                .join(', ')
+            stringBuilder.push(`Minimal value ${minH} corresponds to the transitions: ${minTransitions}`)
             const newTransitions: NodeTransition[] = [];
             nodesWithMinH.forEach(node => {
                 I.add(node.index);
@@ -36,35 +66,61 @@ export class MintyService {
 
                 newTransitions.push(...this.getNodeTransitions(node.index))
             });
-            newTransitions.forEach(destination => J.add(destination.end));
+            newTransitions.forEach(destination => {
+                if(!I.has(destination.end))
+                    J.add(destination.end)
+            });
 
             const availableTransitions = this.transitions
                 .filter(transition => I.has(transition.start) && J.has(transition.end));
 
             stepHs = this.getHs(nodesData, availableTransitions)
+            step++;
+            stringBuilder.push('----------------------------------------------')
         }
+
+        stringBuilder.push(`Step ${step}:`)
+
+        const addedNodesToMessage: number[] = [];
+        const nodesDataMessage = nodesData.map(n => {
+            if(addedNodesToMessage.some(a => a === n.index))
+                return '';
+            addedNodesToMessage.push(n.index);
+            return "h" + n.index + " = " + n.h;
+        })
+            .filter(m => m !== '')
+            .join(', ')
+        stringBuilder.push(`${nodesDataMessage}`)
+        stringBuilder.push(`I={${[...I].join(', ')}}`);
+        stringBuilder.push(`J={${[...J].join(', ')}}`);
 
         const finalNode = nodesData.find(node => node.index === destinationNodeIndex);
+        if(!finalNode) {
+            return {isSuccessful: false, message: "The path was not detected"};
+        }
+
+
         const path :NodeTransition[] = [];
-        if(finalNode) {
-            let node: NodeData | null = {... finalNode};
-            while(node){
-                const transition = this.transitions.find(t => t.id == node.createdFromTransitionId);
-                if(node.createdFromTransitionId) {
-                    path.push(transition)
-                }
-                node = nodesData.find(n => n.index == transition?.start);
+        let node: NodeData | null = {... finalNode};
+        while(node){
+            const transition = this.transitions.find(t => t.id == node.createdFromTransitionId);
+            if(node.createdFromTransitionId) {
+                path.push(transition)
             }
 
-            return {
-                    mintyResult: {
-                            h: finalNode.h,
-                            path: path.reverse()
-                    },
-                    isSuccessful: true
-            }
+            node = nodesData.find(n => n.index == transition?.start);
         }
-        return {isSuccessful: false, errorMessage: "The path was not detected"};
+
+        return {
+                mintyResult: {
+                        h: finalNode.h,
+                        path: path.reverse(),
+                        detailedPath: stringBuilder,
+                },
+                isSuccessful: true,
+
+        }
+
     }
 
     private getHs(nodesData: NodeData[], transitions: NodeTransition[]): NodeData[]{

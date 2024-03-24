@@ -73,11 +73,13 @@
             <div class="col-2 ms-3">
                 <ng-container *ngIf="result !== null">
                     <ng-container *ngIf="!result.isSuccessful; else mintyResult">
-                        <p>{{result.errorMessage}}</p>
+                        <p>{{result.message}}</p>
                     </ng-container>
                     <ng-template #mintyResult>
                         <p>H: {{result.mintyResult.h}}</p>
-<!--                        <p>Path: {{result.path.join('->')}}</p>-->
+                        <p *ngFor="let message of result.mintyResult.detailedPath" class="mb-0">
+                            {{message}}
+                        </p>
                     </ng-template>
                 </ng-container>
             </div>
