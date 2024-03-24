@@ -39,11 +39,12 @@ export class MintyComponent implements OnInit, OnDestroy {
         private dataService: DataService,
         private destroyRef: DestroyRef
     ) {
-        this.data$ = dataService.data$.asObservable();
     }
 
 
     ngOnInit(): void {
+        this.data$ = this.dataService.data$.asObservable();
+
         for (var key in localStorage){
             if(key.startsWith(this.localStorageTemplate, 0)){
                 this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
@@ -72,6 +73,8 @@ export class MintyComponent implements OnInit, OnDestroy {
                 )
                 this.clearMintyResult();
             })
+
+        this.updateGraph$.next(true)
     }
 
     onSeed(): void {
