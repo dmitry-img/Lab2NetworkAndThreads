@@ -1,6 +1,6 @@
 import {Component, DestroyRef, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Edge, GraphComponent, Node} from "@swimlane/ngx-graph";
-import {Observable, Subject} from "rxjs";
+import {from, map, Observable, Subject} from "rxjs";
 import {NodeTransition} from "./minty-table/node-transition";
 import {MintyTableComponent} from "./minty-table/minty-table.component";
 import {MintyService} from "../../minty.service";
@@ -45,7 +45,7 @@ export class MintyComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.data$ = this.dataService.data$.asObservable();
 
-        for (var key in localStorage){
+        for (const key in localStorage){
             if(key.startsWith(this.localStorageTemplate, 0)){
                 this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
             }
@@ -145,6 +145,14 @@ export class MintyComponent implements OnInit, OnDestroy {
         console.log($event)
         const file: File = $event.target["files"][0];
         console.log(file)
-        file.text().then(res => console.log(res))
+        from(file.text())
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                map((data: string) => JSON.parse(data) as NodeTransition[])
+            )
+            .subscribe((data: NodeTransition[]) => {
+                this.dataService.setData(data);
+                this.saveToLocalStorage(file.name);
+            });
     }
 }
