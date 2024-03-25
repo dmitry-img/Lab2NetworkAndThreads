@@ -1,6 +1,6 @@
 import {Component, DestroyRef, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Edge, GraphComponent, Node} from "@swimlane/ngx-graph";
-import {from, map, Observable, Subject} from "rxjs";
+import {from, map, Observable, Subject, take} from "rxjs";
 import {NodeTransition} from "./minty-table/node-transition";
 import {MintyTableComponent} from "./minty-table/minty-table.component";
 import {MintyService} from "../../minty.service";
@@ -47,6 +47,22 @@ export class MintyComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.data$ = this.dataService.data$.asObservable();
 
+        this.dataService.getVariantsData()
+            .pipe(take(1))
+            .subscribe(values => {
+                values.forEach(([variantData, variantName]) => {
+                    const identifiedData = variantData.map(nodeTransition => ({
+                        ...nodeTransition,
+                        id: uuidv4()
+                    }))
+                    this.saveToLocalStorage(variantName, identifiedData);
+                })
+            })
+        // dataSets.forEach(([nodeTransitions, datasetName], index) => {
+        //     const enhancedNodeTransitions = nodeTransitions.map(nodeTransition => ({
+        //         ...nodeTransition,
+        //         id: uuidv4()
+        //     }));
         for (const key in localStorage){
             if(key.startsWith(this.localStorageTemplate, 0)){
                 this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())
@@ -119,13 +135,13 @@ export class MintyComponent implements OnInit, OnDestroy {
         this.setsSelect.nativeElement.options.selectedIndex = 0;
     }
 
-    saveToLocalStorage(value: string){
+    saveToLocalStorage(value: string, data:NodeTransition[] = null){
         if(!value) {
             alert("Invalid group name")
             return;
         }
         this.savedDatasets.add(value)
-        localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(this.dataService.getData()))
+        localStorage.setItem(this.localStorageTemplate + value, JSON.stringify(data ?? this.dataService.getData()))
     }
 
     onSetSelect(value: any) {
@@ -140,9 +156,7 @@ export class MintyComponent implements OnInit, OnDestroy {
     }
 
     onFileSelected($event: Event) {
-        console.log($event)
         const file: File = $event.target["files"][0];
-        console.log(file)
         from(file.text())
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
@@ -152,24 +166,5 @@ export class MintyComponent implements OnInit, OnDestroy {
                 this.dataService.setData(data);
                 this.saveToLocalStorage(this.localStorageTemplate + file.name.split('.')[0]);
             });
-    }
-
-    onSeed() {
-        this.dataService.getSeedData().subscribe(dataSets => {
-            dataSets.forEach(([nodeTransitions, datasetName], index) => {
-                const enhancedNodeTransitions = nodeTransitions.map(nodeTransition => ({
-                    ...nodeTransition,
-                    id: uuidv4()
-                }));
-
-                this.dataService.setData(enhancedNodeTransitions);
-                this.saveToLocalStorage(datasetName);
-            });
-
-            const selectElement = this.setsSelect.nativeElement;
-            if (selectElement && selectElement.options.length > 0) {
-                selectElement.value = selectElement.options[selectElement.options.length - 1].value;
-            }
-        });
     }
 }

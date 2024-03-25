@@ -2,7 +2,6 @@ import {DestroyRef, Injectable} from '@angular/core';
 import {BehaviorSubject, forkJoin, map, Observable} from "rxjs";
 import { NodeTransition } from "./features/minty/minty-table/node-transition";
 import { HttpClient } from "@angular/common/http";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -18,7 +17,7 @@ export class DataService {
         return this.data$.value;
     }
 
-    getSeedData(): Observable<Array<[NodeTransition[], string]>> {
+    getVariantsData(): Observable<Array<[NodeTransition[], string]>> {
         return forkJoin({
             banduraBohdan: this.http.get<NodeTransition[]>('/assets/bandura-bohdan.json'),
             paskarDmytro: this.http.get<NodeTransition[]>('/assets/paskar-dmytro.json'),
