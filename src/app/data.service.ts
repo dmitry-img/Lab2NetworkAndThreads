@@ -21,14 +21,14 @@ export class DataService {
         return forkJoin({
             banduraBohdan: this.http.get<NodeTransition[]>('/assets/bandura-bohdan.json'),
             paskarDmytro: this.http.get<NodeTransition[]>('/assets/paskar-dmytro.json'),
-            pataraykoMaksym: this.http.get<NodeTransition[]>('/assets/potarayko-maksym.json'),
+            potaraykoMaksym: this.http.get<NodeTransition[]>('/assets/potarayko-maksym.json'),
             kaptarDiana: this.http.get<NodeTransition[]>('/assets/kaptar-diana.json'),
         }).pipe(
             map(results => {
                 return [
                     [results.banduraBohdan, 'Bandura Bohdan'],
                     [results.paskarDmytro, 'Paskar Dmytro'],
-                    [results.pataraykoMaksym, 'Potarayko Maksym'],
+                    [results.potaraykoMaksym, 'Potarayko Maksym'],
                     [results.kaptarDiana, 'Kaptar Diana']
                 ];
             })
