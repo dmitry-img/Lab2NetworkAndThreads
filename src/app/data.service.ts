@@ -28,7 +28,7 @@ export class DataService {
                 return [
                     [results.banduraBohdan, 'Bandura Bohdan'],
                     [results.paskarDmytro, 'Paskar Dmytro'],
-                    [results.pataraykoMaksym, 'Patarayko Maksym'],
+                    [results.pataraykoMaksym, 'Potarayko Maksym'],
                     [results.kaptarDiana, 'Kaptar Diana']
                 ];
             })
