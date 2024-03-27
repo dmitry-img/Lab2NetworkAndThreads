@@ -58,11 +58,7 @@ export class MintyComponent implements OnInit, OnDestroy {
                     this.saveToLocalStorage(variantName, identifiedData);
                 })
             })
-        // dataSets.forEach(([nodeTransitions, datasetName], index) => {
-        //     const enhancedNodeTransitions = nodeTransitions.map(nodeTransition => ({
-        //         ...nodeTransition,
-        //         id: uuidv4()
-        //     }));
+
         for (const key in localStorage){
             if(key.startsWith(this.localStorageTemplate, 0)){
                 this.savedDatasets.add(key.replace(this.localStorageTemplate, '').trim())

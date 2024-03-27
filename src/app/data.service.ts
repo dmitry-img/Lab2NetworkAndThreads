@@ -21,7 +21,7 @@ export class DataService {
         return forkJoin({
             banduraBohdan: this.http.get<NodeTransition[]>('/assets/bandura-bohdan.json'),
             paskarDmytro: this.http.get<NodeTransition[]>('/assets/paskar-dmytro.json'),
-            pataraykoMaksym: this.http.get<NodeTransition[]>('/assets/patarayko-maksym.json'),
+            pataraykoMaksym: this.http.get<NodeTransition[]>('/assets/potarayko-maksym.json'),
             kaptarDiana: this.http.get<NodeTransition[]>('/assets/kaptar-diana.json'),
         }).pipe(
             map(results => {
