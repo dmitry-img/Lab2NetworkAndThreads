@@ -121,6 +121,20 @@ export class MintyComponent implements OnInit, OnDestroy {
         }
     }
 
+    get path(): string {
+        if (this.result?.mintyResult?.path && this.result.mintyResult.path.length > 0) {
+            const pathParts = this.result.mintyResult.path.map(node => node.start);
+
+            const lastNode = this.result.mintyResult.path[this.result.mintyResult.path.length - 1];
+            pathParts.push(lastNode.end);
+
+            return pathParts.join('>');
+        } else {
+            return 'Path is not available';
+        }
+    }
+
+
     ngOnDestroy(): void {
         this.clear();
     }
@@ -159,8 +173,23 @@ export class MintyComponent implements OnInit, OnDestroy {
                 map((data: string) => JSON.parse(data) as NodeTransition[])
             )
             .subscribe((data: NodeTransition[]) => {
-                this.dataService.setData(data);
+                const identifiedData = data.map(nodeTransition => ({
+                    ...nodeTransition,
+                    id: uuidv4()
+                }))
+
+                this.dataService.setData(identifiedData);
                 this.saveToLocalStorage(this.localStorageTemplate + file.name.split('.')[0]);
             });
+    }
+
+    protected readonly console = console;
+
+    downloadPath() {
+        this.dataService.downloadPath(this.path)
+    }
+
+    downloadDataset() {
+        this.dataService.downloadDataset();
     }
 }

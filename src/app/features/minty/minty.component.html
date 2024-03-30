@@ -21,7 +21,11 @@
 
                 <div class="d-flex">
                     <input class="ms-1 form-control w-50 me-2" [type]= "'text'" #groupName [placeholder]="'Input name of data group'"/>
-                    <button class="btn btn-light m-1" (click)="saveToLocalStorage(groupName.value)">Save Data</button>
+                    <button class="btn btn-warning m-1" (click)="saveToLocalStorage(groupName.value)">Save Data</button>
+                </div>
+                <div class="d-flex" *ngIf="result!">
+                    <button (click)="downloadDataset()" class="btn btn-success mt-2 mb-2 ms-1">Download dataset</button>
+                    <button (click)="downloadPath()" class="btn btn-success mt-2 mb-2 ms-1">Download path</button>
                 </div>
             </div>
             <div class="col-6">
@@ -35,7 +39,7 @@
                     [layout]="'dagre'"
                     [autoZoom]="true"
                     [update$]="updateGraph$"
-                    [view]="[1000, 800]"
+                    [view]="[800, 800]"
                 >
 
                     <ng-template #nodeTemplate let-node>
@@ -81,7 +85,8 @@
                         <p>{{result.message}}</p>
                     </ng-container>
                     <ng-template #mintyResult>
-                        <p>H: {{result.mintyResult.h}}</p>
+                        <p>H: {{result.mintyResult.h}}
+                        <p>Full path: {{path}}</p>
                         <p *ngFor="let message of result.mintyResult.detailedPath" class="mb-0">
                             {{message}}
                         </p>
